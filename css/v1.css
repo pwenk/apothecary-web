@@ -1,0 +1,473 @@
+/* ==================================================================
+   Style 1 · ASSAY
+   A pharmacology lab sheet: cool grey-green paper, ultramarine ink,
+   a grotesque display face, and articles listed like assay results.
+   ================================================================== */
+
+html[data-style="1"] {
+  --bg: #e9eeec;
+  --paper: #f7f9f8;
+  --ink: #0f1c18;
+  --muted: #56655f;
+  --rule: #c3cec9;
+  --accent: #2436e8;
+  --accent-ink: #ffffff;
+  --font-display: "Bricolage Grotesque", system-ui, sans-serif;
+  --font-body: "Newsreader", Georgia, "Times New Roman", serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+[data-style="1"] body {
+  background-color: var(--bg);
+  background-image: linear-gradient(var(--rule) 1px, transparent 1px),
+    linear-gradient(90deg, var(--rule) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-position: -1px -1px;
+  background-attachment: fixed;
+}
+
+/* Graph paper fades out under the content so text stays calm. */
+[data-style="1"] #view,
+[data-style="1"] .site-foot {
+  background: linear-gradient(var(--bg), var(--bg)) padding-box;
+}
+
+[data-style="1"] .masthead {
+  background: var(--bg);
+  max-width: none;
+  border-bottom: 1px solid var(--ink);
+}
+
+[data-style="1"] .brand-mark {
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  background: radial-gradient(circle, var(--accent) 0 4px, transparent 5px);
+}
+
+[data-style="1"] .brand-name {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+/* ---------- hero ---------- */
+
+[data-style="1"] .hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: clamp(32px, 5vw, 80px);
+  align-items: end;
+  padding-block: clamp(48px, 8vw, 112px) clamp(40px, 6vw, 72px);
+  border-bottom: 1px solid var(--ink);
+}
+
+[data-style="1"] .hero-kicker {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 20px;
+}
+
+[data-style="1"] .hero-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.8rem, 7.4vw, 6.6rem);
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+  font-variation-settings: "opsz" 96;
+}
+
+[data-style="1"] .hero-lede {
+  margin-top: 28px;
+  max-width: 34rem;
+  font-size: 1.25rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+[data-style="1"] .hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 32px;
+  padding: 14px 20px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+[data-style="1"] .hero-cta::after {
+  content: "→";
+  transition: transform 0.2s ease;
+}
+
+[data-style="1"] .hero-cta:hover {
+  background: var(--ink);
+}
+
+[data-style="1"] .hero-cta:hover::after {
+  transform: translateX(4px);
+}
+
+/* The specimen label: an index card for the lead compound. */
+[data-style="1"] .sign-1 {
+  flex-direction: column;
+  gap: 18px;
+  padding: 24px;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  box-shadow: 8px 8px 0 var(--accent);
+}
+
+[data-style="1"] .sign-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+[data-style="1"] .sign-formula {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(3rem, 6vw, 5rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--accent);
+}
+
+[data-style="1"] .sign-grid {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--rule);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+}
+
+[data-style="1"] .sign-grid b {
+  display: block;
+  font-weight: 400;
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+
+/* ---------- index: an assay results sheet ---------- */
+
+[data-style="1"] .index {
+  padding-block: 56px 24px;
+}
+
+[data-style="1"] .index-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+[data-style="1"] .index-head h2 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  letter-spacing: -0.03em;
+}
+
+[data-style="1"] .index-head p {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+[data-style="1"] .index-cols,
+[data-style="1"] .entry {
+  grid-template-columns: minmax(120px, 1.1fr) minmax(0, 3fr) minmax(0, 1.3fr) minmax(0, 1.2fr);
+  gap: 24px;
+  padding-inline: 16px;
+}
+
+[data-style="1"] .index-cols {
+  display: grid;
+  padding-block: 10px;
+  border-top: 2px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+[data-style="1"] .entries li {
+  border-bottom: 1px solid var(--rule);
+}
+
+[data-style="1"] .entry {
+  grid-template-areas: "formula title kind meta" "formula dek kind meta";
+  grid-template-rows: auto 1fr;
+  align-items: start;
+  padding-block: 24px;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+[data-style="1"] .e-formula {
+  display: block;
+  grid-area: formula;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.6rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--accent);
+}
+
+[data-style="1"] .e-title {
+  grid-area: title;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.25rem, 2vw, 1.6rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+[data-style="1"] .e-dek {
+  display: block;
+  grid-area: dek;
+  margin-top: 8px;
+  color: var(--muted);
+  max-width: 46ch;
+}
+
+[data-style="1"] .e-kind,
+[data-style="1"] .e-meta {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+[data-style="1"] .e-kind {
+  grid-area: kind;
+  padding-top: 6px;
+}
+
+[data-style="1"] .e-meta {
+  grid-area: meta;
+  display: grid;
+  gap: 4px;
+  padding-top: 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+[data-style="1"] .e-min {
+  color: var(--muted);
+}
+
+[data-style="1"] .entry:hover,
+[data-style="1"] .entry:focus-visible {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+[data-style="1"] .entry:hover .e-formula,
+[data-style="1"] .entry:hover .e-dek,
+[data-style="1"] .entry:hover .e-min,
+[data-style="1"] .entry:focus-visible .e-formula,
+[data-style="1"] .entry:focus-visible .e-dek,
+[data-style="1"] .entry:focus-visible .e-min {
+  color: inherit;
+}
+
+[data-style="1"] .entry:focus-visible {
+  outline-color: var(--ink);
+}
+
+/* ---------- about ---------- */
+
+[data-style="1"] .about {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: 24px 48px;
+  padding-block: 56px;
+  margin-top: 40px;
+  border-top: 2px solid var(--ink);
+}
+
+[data-style="1"] .about h2 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.5rem;
+  letter-spacing: -0.02em;
+}
+
+[data-style="1"] .about p {
+  font-size: 1.2rem;
+  max-width: var(--measure);
+}
+
+/* ---------- article ---------- */
+
+[data-style="1"] .post-head {
+  padding-bottom: 40px;
+  border-bottom: 2px solid var(--ink);
+}
+
+[data-style="1"] .back {
+  color: var(--accent);
+}
+
+[data-style="1"] .post-kicker {
+  display: flex;
+  gap: 12px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+[data-style="1"] .post-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.4rem, 6vw, 5.2rem);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  max-width: 16ch;
+}
+
+[data-style="1"] .post-dek {
+  margin-top: 24px;
+  font-size: 1.3rem;
+  line-height: 1.45;
+  color: var(--muted);
+  max-width: 44ch;
+}
+
+[data-style="1"] .post-facts {
+  border: 1px solid var(--ink);
+  background: var(--paper);
+}
+
+[data-style="1"] .post-facts div {
+  padding: 14px 16px;
+  border-right: 1px solid var(--rule);
+}
+
+[data-style="1"] .post-facts div:last-child {
+  border-right: 0;
+}
+
+[data-style="1"] .post-facts dd {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.25rem;
+}
+
+[data-style="1"] .post-body {
+  margin: 56px 0 0 auto;
+  margin-right: max(0px, calc((100% - var(--measure)) / 6));
+  font-size: 1.2rem;
+  line-height: 1.65;
+}
+
+[data-style="1"] .post-body h2 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.6rem;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+[data-style="1"] .post-body section:first-child p:first-of-type::first-letter {
+  float: left;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 4.2em;
+  line-height: 0.8;
+  margin: 0.06em 0.08em 0 0;
+  color: var(--accent);
+}
+
+[data-style="1"] .post-foot {
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  padding-top: 32px;
+  border-top: 1px solid var(--ink);
+}
+
+[data-style="1"] .post-next {
+  align-self: start;
+  padding: 20px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  transition: background-color 0.2s ease;
+}
+
+[data-style="1"] .post-next span {
+  color: inherit;
+  opacity: 0.8;
+}
+
+[data-style="1"] .post-next strong {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  line-height: 1.2;
+}
+
+[data-style="1"] .post-next:hover {
+  background: var(--ink);
+}
+
+[data-style="1"] .site-foot {
+  border-top: 1px solid var(--ink);
+  max-width: none;
+}
+
+/* ---------- small screens ---------- */
+
+@media (max-width: 860px) {
+  [data-style="1"] .hero {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+  [data-style="1"] .sign-1 {
+    margin-right: 8px;
+  }
+  [data-style="1"] .index-cols {
+    display: none;
+  }
+  [data-style="1"] .entry {
+    grid-template-columns: 1fr;
+    grid-template-areas: "formula" "title" "dek" "kind" "meta";
+    grid-template-rows: none;
+    gap: 6px;
+    padding-inline: 12px;
+  }
+  [data-style="1"] .e-kind,
+  [data-style="1"] .e-meta {
+    padding-top: 0;
+  }
+  [data-style="1"] .e-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+  }
+  [data-style="1"] .about,
+  [data-style="1"] .post-foot {
+    grid-template-columns: 1fr;
+  }
+  [data-style="1"] .post-body {
+    margin-inline: 0;
+  }
+  [data-style="1"] .post-facts div:nth-child(2n) {
+    border-right: 0;
+  }
+}

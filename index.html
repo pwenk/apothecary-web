@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en" data-style="1">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Apothecary · Field notes on drugs, food & metabolism</title>
+    <meta name="description" content="Plain-language articles on aspirin, doxycycline, Ray Peat's ideas, orange juice, gelatin and other everyday biology, with sources." />
+    <meta name="theme-color" content="#E9EEEC" />
+    <meta property="og:title" content="Apothecary" />
+    <meta property="og:description" content="Field notes on drugs, food & metabolism." />
+    <meta property="og:type" content="website" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <script>
+      // Apply the saved style before first paint so the page never flashes the wrong look.
+      (function () {
+        var v = new URLSearchParams(location.search).get("v");
+        try { v = v || localStorage.getItem("apothecary-style"); } catch (e) {}
+        if (v === "1" || v === "2" || v === "3") document.documentElement.dataset.style = v;
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Cormorant+Garamond:ital,wght@0,500;1,400;1,500&family=DM+Mono:wght@400;500&family=Hanken+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;600&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap"
+    />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/v1.css" />
+    <link rel="stylesheet" href="css/v2.css" />
+    <link rel="stylesheet" href="css/v3.css" />
+  </head>
+  <body>
+    <a class="skip" href="#view">Skip to content</a>
+    <canvas id="ambient" aria-hidden="true"></canvas>
+
+    <header class="masthead">
+      <a class="brand" href="#/" aria-label="Apothecary home">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-name">Apothecary</span>
+      </a>
+      <nav class="nav" aria-label="Main">
+        <a href="#/articles">Articles</a>
+        <a href="#/about">About</a>
+      </nav>
+    </header>
+
+    <main id="view" tabindex="-1"></main>
+
+    <footer class="site-foot">
+      <p>Apothecary publishes general information, not medical advice. Always talk to a doctor or pharmacist before you start, stop or change a medicine.</p>
+      <p class="site-foot-small">© 2026 Apothecary · Press 1, 2 or 3 to change the style</p>
+    </footer>
+
+    <div class="switcher" role="group" aria-label="Page style">
+      <span class="switcher-label" id="switcher-label">Style</span>
+      <div id="switcher-group" class="switcher-group" role="radiogroup" aria-labelledby="switcher-label"></div>
+    </div>
+
+    <noscript><p class="noscript">Apothecary needs JavaScript to show its articles.</p></noscript>
+
+    <script src="js/articles.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/ambient.js"></script>
+  </body>
+</html>
