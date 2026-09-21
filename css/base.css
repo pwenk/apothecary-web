@@ -170,22 +170,32 @@ p {
   }
 }
 
-/* The hero carries one decorative "sign" per style; only the active one shows. */
-.sign {
-  display: none;
+figure {
+  margin: 0;
 }
 
-html[data-style="1"] .sign-1,
-html[data-style="2"] .sign-2,
-html[data-style="3"] .sign-3 {
-  display: flex;
+/* Specimen drawings: every style colours .g-fill and .g-line its own way. */
+.glyph {
+  display: block;
+  overflow: visible;
 }
 
-.ticker {
-  display: none;
+.glyph .g-fill {
+  fill: currentColor;
+  stroke: none;
 }
 
-.index-cols {
+.glyph .g-line {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Paper tape only exists on the Sheet style. */
+.tape {
   display: none;
 }
 
@@ -200,17 +210,64 @@ html[data-style="3"] .sign-3 {
   text-decoration: none;
 }
 
-.e-dek,
-.e-latin,
-.e-formula,
-.e-plate {
-  display: none;
+.e-label {
+  display: grid;
+  align-content: start;
+}
+
+.e-latin {
+  font-style: italic;
+}
+
+.e-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 16px;
+  font-variant-numeric: tabular-nums;
+}
+
+.hero {
+  display: grid;
+}
+
+canvas {
+  display: block;
 }
 
 /* ---------- article ---------- */
 
 .post {
   padding-block: 32px 64px;
+}
+
+.post-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(160px, 300px);
+  gap: 32px 48px;
+  align-items: end;
+}
+
+.post-facts {
+  grid-column: 1 / -1;
+}
+
+.post-specimen {
+  position: relative;
+}
+
+.post-specimen figcaption {
+  display: grid;
+  gap: 2px;
+}
+
+@media (max-width: 720px) {
+  .post-head {
+    grid-template-columns: 1fr;
+  }
+  .post-specimen {
+    max-width: 240px;
+  }
 }
 
 .back {
@@ -414,10 +471,6 @@ html[data-style="3"] .sign-3 {
   .switch-btn {
     padding: 8px 14px;
   }
-}
-
-#ambient {
-  display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

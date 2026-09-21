@@ -1,41 +1,51 @@
 (() => {
   "use strict";
 
+  // Three takes on the herbarium: a daylight specimen sheet, a cyanotype
+  // print after Anna Atkins, and a darkfield microscope.
   const STYLES = {
     1: {
-      name: "Assay",
-      themeColor: "#e9eeec",
-      kicker: "Pharmacology, food & physiology, measured",
-      title: "Read the label before you take the pill.",
-      lede: "Plain-language notes on the molecules people swallow every day: what they are, what they do, and what the evidence really shows.",
-      indexTitle: "Current assays",
+      name: "Sheet",
+      themeColor: "#dde2d9",
+      kicker: "Herbarium Apothecary · est. 2026",
+      title: "Every remedy was once a living thing",
+      lede: "Willow bark, soil bacteria, oranges, bone. We press each medicine and food flat, label it, and trace it back to the organism it came from.",
+      indexTitle: "The collection",
+      cta: "Open the first sheet",
     },
     2: {
-      name: "Metabolic",
-      themeColor: "#ff5b14",
-      kicker: "Notes for a warmer body",
-      title: "Energy is the whole story",
-      lede: "Aspirin, orange juice, thyroid, gelatin. We follow the ideas people use to feel warmer and stronger, and we check each one against the evidence.",
-      indexTitle: "On the stove",
+      name: "Cyanotype",
+      themeColor: "#15356a",
+      kicker: "Impressions in Prussian blue",
+      title: "Every remedy was once a living thing",
+      lede: "In 1843 Anna Atkins laid plants on sun-sensitive paper and made the first book illustrated with photographs. We print our specimens the same way, then read what science says about them.",
+      indexTitle: "The prints",
+      cta: "See the first print",
     },
     3: {
-      name: "Herbarium",
-      themeColor: "#0d1411",
-      kicker: "A cabinet of living chemistry",
+      name: "Darkfield",
+      themeColor: "#060807",
+      kicker: "Under the lens · ×400",
       title: "Every remedy was once a living thing",
-      lede: "Willow bark, soil bacteria, oranges, bone. Each plate traces a medicine or food back to the organism it came from.",
-      indexTitle: "The plates",
+      lede: "Turn off the light behind a sample and it starts to glow at the edges. We look at medicines and foods the same way, down to the living cells they came from.",
+      indexTitle: "Slides",
+      cta: "Focus on the first slide",
     },
   };
 
-  const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
   const STORAGE_KEY = "apothecary-style";
   const root = document.documentElement;
   const view = document.getElementById("view");
   const articles = window.ARTICLES;
+  const specimens = window.SPECIMENS;
 
   const esc = (s) =>
     String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+
+  const accession = (i) => `No. ${String(i + 1).padStart(4, "0")}`;
+
+  const glyph = (slug, cls = "glyph") =>
+    `<svg class="${cls}" viewBox="0 0 200 300" aria-hidden="true" focusable="false">${specimens[slug] || ""}</svg>`;
 
   // ---------- style state ----------
   function readStoredStyle() {
@@ -74,53 +84,66 @@
       btn.tabIndex = btn.dataset.v === next ? 0 : -1;
     });
     render(false);
-    window.dispatchEvent(new CustomEvent("stylechange", { detail: next }));
   }
 
   // ---------- views ----------
+
+  // The hero object changes with the style: a mounted sheet, a sun print, a lens.
   function heroSign() {
     const lead = articles[0];
+    if (style === "1") {
+      return `
+        <figure class="hero-sign sheet" aria-label="Herbarium sheet of ${esc(lead.latin)}">
+          <span class="tape tape-a" aria-hidden="true"></span>
+          <span class="tape tape-b" aria-hidden="true"></span>
+          ${glyph(lead.slug, "glyph sheet-glyph")}
+          <span class="stamp" aria-hidden="true"><span>Herb. Apoth.</span></span>
+          <figcaption class="sheet-label">
+            <span class="sl-head">Herbarium Apothecary</span>
+            <span class="sl-no">${accession(0)}</span>
+            <span class="sl-name"><i>${esc(lead.latin)}</i> L.</span>
+            <span>Fam. ${esc(lead.family)}</span>
+            <span>Hab. ${esc(lead.habitat)}</span>
+            <span>Note: bark yields salicin, parent of aspirin</span>
+          </figcaption>
+        </figure>`;
+    }
+    if (style === "2") {
+      return `
+        <figure class="hero-sign print">
+          <canvas class="fern" aria-hidden="true"></canvas>
+          <figcaption>Fern, grown from four equations (Barnsley, 1988), printed in the manner of Anna Atkins, 1843</figcaption>
+        </figure>`;
+    }
     return `
-      <div class="hero-sign" aria-hidden="true">
-        <div class="sign sign-1">
-          <span class="sign-label">Compound 001 · ${esc(lead.common)}</span>
-          <span class="sign-formula">${esc(lead.formula)}</span>
-          <span class="sign-grid">
-            <span><b>MW</b> 180.16 g/mol</span>
-            <span><b>t½</b> ${esc(lead.figure.value)}</span>
-            <span><b>CAS</b> 50-78-2</span>
-          </span>
+      <figure class="hero-sign scope">
+        <div class="lens">
+          <canvas class="cells" aria-hidden="true"></canvas>
+          <span class="lens-mag" aria-hidden="true">×400</span>
+          <span class="lens-scale" aria-hidden="true"><i></i>50 µm</span>
         </div>
-        <div class="sign sign-2">
-          <span class="thermo-read">37.0<small>°C</small></span>
-          <svg class="pulse" viewBox="0 0 600 120" preserveAspectRatio="none">
-            <path d="M0 70 H150 L170 70 L185 20 L200 110 L215 50 L230 70 H330 L350 70 L365 20 L380 110 L395 50 L410 70 H600" />
-          </svg>
-          <span class="thermo-note">98.6 °F · pulse 80 bpm</span>
-        </div>
-        <div class="sign sign-3">
-          <svg class="leaf" viewBox="0 0 200 320">
-            <path class="leaf-blade" d="M100 20 C160 90 165 200 100 300 C35 200 40 90 100 20 Z" />
-            <path class="leaf-vein" d="M100 30 V300 M100 90 L140 70 M100 130 L148 108 M100 170 L146 148 M100 210 L138 192 M100 90 L60 70 M100 130 L52 108 M100 170 L54 148 M100 210 L62 192" />
-          </svg>
-          <span class="plate-tag"><i>Salix alba</i> L.<br />source of salicin</span>
-        </div>
-      </div>`;
+        <figcaption>Darkfield view · living cells, drifting</figcaption>
+      </figure>`;
   }
 
   function entry(a, i) {
     return `
       <li>
         <a class="entry" href="#/${esc(a.slug)}">
-          <span class="e-plate">Pl. ${ROMAN[i]}</span>
-          <span class="e-latin">${esc(a.latin)}</span>
-          <span class="e-formula">${esc(a.formula)}</span>
-          <span class="e-kind">${esc(a.kind)}</span>
-          <span class="e-title">${esc(a.title)}</span>
-          <span class="e-dek">${esc(a.dek)}</span>
-          <span class="e-meta">
-            <span class="e-figure">${esc(a.figure.label)}: ${esc(a.figure.value)}</span>
-            <span class="e-min">${a.minutes} min read</span>
+          <span class="e-art">
+            ${glyph(a.slug, "glyph e-glyph")}
+            <span class="tape tape-a" aria-hidden="true"></span>
+          </span>
+          <span class="e-label">
+            <span class="e-no">${accession(i)}</span>
+            <span class="e-latin">${esc(a.latin)}</span>
+            <span class="e-family">Fam. ${esc(a.family)}</span>
+            <span class="e-title">${esc(a.title)}</span>
+            <span class="e-dek">${esc(a.dek)}</span>
+            <span class="e-meta">
+              <span>${esc(a.figure.label)}: ${esc(a.figure.value)}</span>
+              <span>${a.minutes} min read</span>
+            </span>
           </span>
         </a>
       </li>`;
@@ -128,26 +151,21 @@
 
   function homeView() {
     const s = STYLES[style];
-    const tags = articles.map((a) => `<span>${esc(a.common)}</span>`).join("");
     return `
       <section class="hero">
         <div class="hero-copy">
           <p class="hero-kicker">${esc(s.kicker)}</p>
           <h1 class="hero-title">${esc(s.title)}</h1>
           <p class="hero-lede">${esc(s.lede)}</p>
-          <a class="hero-cta" href="#/${esc(articles[0].slug)}">Start with ${esc(articles[0].common.toLowerCase())} bark</a>
+          <a class="hero-cta" href="#/${esc(articles[0].slug)}">${esc(s.cta)}</a>
         </div>
         ${heroSign()}
       </section>
-      <div class="ticker" aria-hidden="true"><div class="ticker-track">${tags}${tags}</div></div>
       <section class="index" id="articles" aria-labelledby="index-title">
         <header class="index-head">
           <h2 id="index-title">${esc(s.indexTitle)}</h2>
-          <p>${articles.length} articles</p>
+          <p>${articles.length} specimens</p>
         </header>
-        <div class="index-cols" role="presentation" aria-hidden="true">
-          <span>Compound</span><span>Article</span><span>Class</span><span>Key figure</span>
-        </div>
         <ul class="entries">${articles.map(entry).join("")}</ul>
       </section>
       <section class="about" id="about" aria-labelledby="about-title">
@@ -166,12 +184,19 @@
     return `
       <article class="post">
         <header class="post-head">
-          <a class="back" href="#/">← All articles</a>
-          <p class="post-kicker"><span class="e-plate">Pl. ${ROMAN[i]}</span> ${esc(a.kind)}</p>
-          <h1 class="post-title">${esc(a.title)}</h1>
-          <p class="post-dek">${esc(a.dek)}</p>
+          <div class="post-intro">
+            <a class="back" href="#/">← All specimens</a>
+            <p class="post-kicker"><span>${accession(i)}</span><span>${esc(a.kind)}</span></p>
+            <h1 class="post-title">${esc(a.title)}</h1>
+            <p class="post-dek">${esc(a.dek)}</p>
+          </div>
+          <figure class="post-specimen">
+            <span class="tape tape-a" aria-hidden="true"></span>
+            ${glyph(a.slug, "glyph post-glyph")}
+            <figcaption><i>${esc(a.latin)}</i><span>${esc(a.common)}</span></figcaption>
+          </figure>
           <dl class="post-facts">
-            <div><dt>Source</dt><dd><i>${esc(a.latin)}</i></dd></div>
+            <div><dt>Family</dt><dd>${esc(a.family)}</dd></div>
             <div><dt>Formula</dt><dd class="dd-formula">${esc(a.formula)}</dd></div>
             <div><dt>${esc(a.figure.label)}</dt><dd>${esc(a.figure.value)}</dd></div>
             <div><dt>Reading</dt><dd>${a.minutes} min</dd></div>
@@ -184,7 +209,7 @@
             <ol>${refs}</ol>
           </section>
           <a class="post-next" href="#/${esc(next.slug)}">
-            <span>Next article</span>
+            <span>Next specimen · <i>${esc(next.latin)}</i></span>
             <strong>${esc(next.title)}</strong>
           </a>
         </footer>
@@ -195,42 +220,47 @@
     return `
       <section class="post">
         <header class="post-head">
-          <a class="back" href="#/">← All articles</a>
-          <h1 class="post-title">We couldn't find that article</h1>
-          <p class="post-dek">The link may be old or mistyped. Head back to the index to browse everything we have.</p>
+          <div class="post-intro">
+            <a class="back" href="#/">← All specimens</a>
+            <h1 class="post-title">We couldn't find that specimen</h1>
+            <p class="post-dek">The link may be old or mistyped. Head back to the collection to browse everything we have.</p>
+          </div>
         </header>
       </section>`;
   }
 
   // ---------- routing ----------
-  let lastSlug = null;
+  let lastRoute = null;
 
   function render(navigated = true) {
     const slug = decodeURIComponent(location.hash.replace(/^#\/?/, ""));
     const isAnchor = slug === "articles" || slug === "about";
     const article = articles.find((a) => a.slug === slug);
-    const routeKey = article ? slug : "home";
+    const route = article ? slug : !slug || isAnchor ? "home" : "missing";
 
-    if (article) {
-      view.innerHTML = articleView(article);
-      document.title = `${article.title} · Apothecary`;
-    } else if (!slug || isAnchor) {
+    if (route === "home") {
       view.innerHTML = homeView();
       document.title = "Apothecary · Field notes on drugs, food & metabolism";
+    } else if (article) {
+      view.innerHTML = articleView(article);
+      document.title = `${article.title} · Apothecary`;
     } else {
       view.innerHTML = notFoundView();
       document.title = "Not found · Apothecary";
     }
 
-    if (routeKey !== lastSlug) {
+    if (route !== lastRoute) {
       view.classList.remove("enter");
       void view.offsetWidth; // restart the entrance animation
       view.classList.add("enter");
       if (!isAnchor) window.scrollTo(0, 0);
-      if (lastSlug !== null) view.focus({ preventScroll: true });
+      if (lastRoute !== null) view.focus({ preventScroll: true });
     }
     if (isAnchor && navigated) document.getElementById(slug)?.scrollIntoView();
-    lastSlug = routeKey;
+    lastRoute = route;
+
+    // Canvas pieces (fern, lens) draw themselves into the fresh markup.
+    window.dispatchEvent(new CustomEvent("viewrender", { detail: { style } }));
   }
 
   // ---------- switcher ----------
@@ -269,8 +299,11 @@
     });
   }
 
+  // Canvas scripts load after this one, so hand them the first render once the page is ready.
   buildSwitcher();
   window.addEventListener("hashchange", () => render());
-  setStyle(style, { persist: new URLSearchParams(location.search).has("v") });
-  if (location.hash.length > 2) render();
+  window.addEventListener("DOMContentLoaded", () => {
+    setStyle(style, { persist: new URLSearchParams(location.search).has("v") });
+    if (location.hash.length > 2) render();
+  });
 })();

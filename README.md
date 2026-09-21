@@ -6,9 +6,11 @@ The site ships three complete visual styles. Switch with the pill at the bottom 
 
 | # | Name | Idea |
 |---|------|------|
-| 1 | Assay | A pharmacology lab sheet: graph paper, ultramarine ink, articles listed like test results |
-| 2 | Metabolic | Ray Peat's "warm body": hot orange, a live pulse line, heavy condensed type |
-| 3 | Herbarium | A dark specimen cabinet: each article is a plate traced back to the organism it came from |
+| 1 | Sheet | A daylight herbarium: specimens taped to paper, typewritten labels, a red accession stamp |
+| 2 | Cyanotype | After Anna Atkins, 1843: white plant silhouettes on Prussian blue, with a fern grown from four equations |
+| 3 | Darkfield | A microscope view: glowing specimens in round lenses, drifting cells, a 50 µm scale bar |
+
+The first round of styles (Assay, Metabolic, Herbarium) is saved at the git tag `styles-round-1`.
 
 ## Run locally
 
@@ -23,8 +25,10 @@ python3 -m http.server 8000
 
 - `index.html` – page shell, fonts, style switcher
 - `js/articles.js` – all article content
+- `js/specimens.js` – one drawn specimen (SVG) per article
 - `js/app.js` – routing (`#/slug`) and style switching
-- `js/ambient.js` – drifting-cell background for style 3
+- `js/fern.js` – the Barnsley fern for style 2
+- `js/lens.js` – drifting cells in the microscope lens for style 3
 - `css/base.css` – shared structure
 - `css/v1.css`, `css/v2.css`, `css/v3.css` – one file per style
 
