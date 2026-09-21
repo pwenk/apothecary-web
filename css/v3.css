@@ -1,1 +1,535 @@
-/* Style 3 · coming in phase 2 */
+/* ==================================================================
+   Style 3 · HERBARIUM
+   A dark specimen cabinet: pressed-leaf plates, italic Latin names,
+   pollen-gold labels and cells drifting under a microscope.
+   ================================================================== */
+
+html[data-style="3"] {
+  --bg: #0d1411;
+  --paper: #131c18;
+  --ink: #e6e1d3;
+  --muted: #9aa59c;
+  --rule: #2b3831;
+  --accent: #d9c372;
+  --accent-ink: #0d1411;
+  --moss: #6f8f72;
+  --font-display: "Cormorant Garamond", "Iowan Old Style", Georgia, serif;
+  --font-body: "Hanken Grotesk", system-ui, sans-serif;
+  --font-mono: "DM Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  color-scheme: dark;
+}
+
+[data-style="3"] body {
+  background: var(--bg);
+  font-size: 1.02rem;
+}
+
+[data-style="3"] #ambient {
+  display: block;
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+[data-style="3"] .brand-mark {
+  border: 1px solid var(--accent);
+  border-radius: 50% 0;
+  transform: rotate(45deg) scale(0.8);
+  background: linear-gradient(135deg, transparent 47%, var(--accent) 48% 52%, transparent 53%);
+}
+
+[data-style="3"] .brand-name {
+  font-style: italic;
+  font-weight: 500;
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+[data-style="3"] .nav a {
+  color: var(--muted);
+}
+
+[data-style="3"] .nav a:hover {
+  color: var(--ink);
+}
+
+/* ---------- hero ---------- */
+
+[data-style="3"] .hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: clamp(32px, 6vw, 96px);
+  align-items: center;
+  padding-block: clamp(40px, 8vw, 120px);
+}
+
+[data-style="3"] .hero-kicker {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 28px;
+}
+
+[data-style="3"] .hero-kicker::before {
+  content: "";
+  width: 40px;
+  height: 1px;
+  background: currentColor;
+}
+
+[data-style="3"] .hero-title {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(3.2rem, 8vw, 7.6rem);
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+}
+
+[data-style="3"] .hero-lede {
+  margin-top: 32px;
+  max-width: 32rem;
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+[data-style="3"] .hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 36px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--accent);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: gap 0.3s ease;
+}
+
+[data-style="3"] .hero-cta::after {
+  content: "→";
+}
+
+[data-style="3"] .hero-cta:hover {
+  gap: 22px;
+}
+
+/* The pressed-leaf plate with corner marks. */
+[data-style="3"] .sign-3 {
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 40px 32px 28px;
+  border: 1px solid var(--rule);
+  background: rgb(19 28 24 / 0.75);
+  backdrop-filter: blur(4px);
+}
+
+[data-style="3"] .sign-3::before,
+[data-style="3"] .sign-3::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--accent);
+}
+
+[data-style="3"] .sign-3::before {
+  top: -1px;
+  left: -1px;
+  border-right: 0;
+  border-bottom: 0;
+}
+
+[data-style="3"] .sign-3::after {
+  right: -1px;
+  bottom: -1px;
+  border-left: 0;
+  border-top: 0;
+}
+
+[data-style="3"] .leaf {
+  width: min(180px, 60%);
+  height: auto;
+  overflow: visible;
+}
+
+[data-style="3"] .leaf-blade {
+  fill: rgb(111 143 114 / 0.18);
+  stroke: var(--moss);
+  stroke-width: 1.2;
+  stroke-dasharray: 800;
+  animation: draw 2.6s cubic-bezier(0.6, 0, 0.3, 1) both;
+}
+
+[data-style="3"] .leaf-vein {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 0.8;
+  stroke-dasharray: 800;
+  animation: draw 3.2s 0.6s cubic-bezier(0.6, 0, 0.3, 1) both;
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: 800;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+[data-style="3"] .plate-tag {
+  width: 100%;
+  padding-top: 14px;
+  border-top: 1px dashed var(--rule);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--muted);
+}
+
+[data-style="3"] .plate-tag i {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink);
+}
+
+/* ---------- index: specimen plates ---------- */
+
+[data-style="3"] .index {
+  padding-block: 40px 24px;
+  border-top: 1px solid var(--rule);
+}
+
+[data-style="3"] .index-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 36px;
+}
+
+[data-style="3"] .index-head h2 {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+}
+
+[data-style="3"] .index-head p {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+[data-style="3"] .entries {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+}
+
+[data-style="3"] .entries li {
+  display: flex;
+  background: var(--bg);
+}
+
+[data-style="3"] .entry {
+  flex: 1;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "plate formula"
+    "latin latin"
+    "title title"
+    "dek dek"
+    "meta meta";
+  grid-template-rows: auto auto auto 1fr auto;
+  gap: 10px;
+  padding: 28px 28px 24px;
+  background: var(--bg);
+  transition: background-color 0.4s ease;
+}
+
+[data-style="3"] .e-plate,
+[data-style="3"] .e-formula {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+
+[data-style="3"] .e-plate {
+  grid-area: plate;
+  color: var(--accent);
+}
+
+[data-style="3"] .e-formula {
+  grid-area: formula;
+  letter-spacing: 0.02em;
+}
+
+[data-style="3"] .e-latin {
+  display: block;
+  grid-area: latin;
+  margin-top: 28px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 2.3rem;
+  line-height: 1;
+  color: var(--moss);
+  transition: color 0.4s ease, transform 0.4s ease;
+}
+
+[data-style="3"] .e-kind {
+  display: none;
+}
+
+[data-style="3"] .e-title {
+  grid-area: title;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 1.15rem;
+  line-height: 1.3;
+}
+
+[data-style="3"] .e-dek {
+  display: block;
+  grid-area: dek;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+[data-style="3"] .e-meta {
+  grid-area: meta;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin-top: 12px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--rule);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+[data-style="3"] .entry:hover,
+[data-style="3"] .entry:focus-visible {
+  background: var(--paper);
+}
+
+[data-style="3"] .entry:hover .e-latin,
+[data-style="3"] .entry:focus-visible .e-latin {
+  color: var(--accent);
+  transform: translateX(6px);
+}
+
+[data-style="3"] .entry:focus-visible {
+  outline-offset: -3px;
+}
+
+/* ---------- about ---------- */
+
+[data-style="3"] .about {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: 24px 64px;
+  padding-block: clamp(56px, 8vw, 96px);
+}
+
+[data-style="3"] .about h2 {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 2.4rem;
+  line-height: 1;
+}
+
+[data-style="3"] .about p {
+  max-width: var(--measure);
+  font-size: 1.1rem;
+  color: var(--muted);
+}
+
+/* ---------- article ---------- */
+
+[data-style="3"] .post {
+  max-width: 900px;
+  margin-inline: auto;
+}
+
+[data-style="3"] .back {
+  color: var(--accent);
+}
+
+[data-style="3"] .post-kicker {
+  display: flex;
+  gap: 16px;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+
+[data-style="3"] .post-kicker .e-plate {
+  display: inline;
+  font-size: inherit;
+}
+
+[data-style="3"] .post-title {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(3rem, 8vw, 6.4rem);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+}
+
+[data-style="3"] .post-dek {
+  margin-top: 28px;
+  max-width: 44ch;
+  font-size: 1.2rem;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+/* The herbarium label: a bordered specimen card. */
+[data-style="3"] .post-facts {
+  position: relative;
+  margin-top: 48px;
+  border: 1px solid var(--rule);
+  background: rgb(19 28 24 / 0.8);
+}
+
+[data-style="3"] .post-facts div {
+  padding: 16px 20px;
+  border-right: 1px solid var(--rule);
+}
+
+[data-style="3"] .post-facts div:last-child {
+  border-right: 0;
+}
+
+[data-style="3"] .post-facts dd {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  line-height: 1.1;
+  color: var(--accent);
+}
+
+[data-style="3"] .post-facts .dd-formula {
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+[data-style="3"] .post-body {
+  margin: 64px auto 0;
+  font-size: 1.1rem;
+  line-height: 1.75;
+  color: #d4d0c3;
+}
+
+[data-style="3"] .post-body h2 {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 2.1rem;
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+[data-style="3"] .post-body section + section {
+  padding-top: 2.4em;
+  border-top: 1px solid var(--rule);
+}
+
+[data-style="3"] .post-foot {
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  padding-top: 40px;
+  border-top: 1px solid var(--rule);
+}
+
+[data-style="3"] .post-next {
+  align-self: start;
+  padding: 24px;
+  border: 1px solid var(--rule);
+  transition: border-color 0.3s ease;
+}
+
+[data-style="3"] .post-next strong {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 1.6rem;
+  line-height: 1.1;
+}
+
+[data-style="3"] .post-next:hover {
+  border-color: var(--accent);
+}
+
+[data-style="3"] .site-foot {
+  border-top: 1px solid var(--rule);
+}
+
+/* The switcher inverts to sit calmly on the dark ground. */
+[data-style="3"] .switcher {
+  background: var(--ink);
+  color: var(--bg);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.5);
+}
+
+[data-style="3"] .switch-btn:hover {
+  background: rgb(0 0 0 / 0.08);
+}
+
+[data-style="3"] .switch-btn[aria-checked="true"] {
+  background: var(--bg);
+  color: var(--ink);
+}
+
+[data-style="3"] .switch-btn:focus-visible {
+  outline-color: var(--bg);
+}
+
+/* ---------- small screens ---------- */
+
+@media (max-width: 860px) {
+  [data-style="3"] .hero,
+  [data-style="3"] .about,
+  [data-style="3"] .post-foot {
+    grid-template-columns: 1fr;
+  }
+  [data-style="3"] .post-facts div:nth-child(2n) {
+    border-right: 0;
+  }
+}

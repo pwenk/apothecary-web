@@ -4,6 +4,7 @@
   const STYLES = {
     1: {
       name: "Assay",
+      themeColor: "#e9eeec",
       kicker: "Pharmacology, food & physiology, measured",
       title: "Read the label before you take the pill.",
       lede: "Plain-language notes on the molecules people swallow every day: what they are, what they do, and what the evidence really shows.",
@@ -11,6 +12,7 @@
     },
     2: {
       name: "Metabolic",
+      themeColor: "#ff5b14",
       kicker: "Notes for a warmer body",
       title: "Energy is the whole story",
       lede: "Aspirin, orange juice, thyroid, gelatin. We follow the ideas people use to feel warmer and stronger, and we check each one against the evidence.",
@@ -18,6 +20,7 @@
     },
     3: {
       name: "Herbarium",
+      themeColor: "#0d1411",
       kicker: "A cabinet of living chemistry",
       title: "Every remedy was once a living thing",
       lede: "Willow bark, soil bacteria, oranges, bone. Each plate traces a medicine or food back to the organism it came from.",
@@ -55,6 +58,7 @@
     if (!STYLES[next]) return;
     style = next;
     root.dataset.style = next;
+    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", STYLES[next].themeColor);
     if (persist) {
       try {
         localStorage.setItem(STORAGE_KEY, next);
@@ -168,7 +172,7 @@
           <p class="post-dek">${esc(a.dek)}</p>
           <dl class="post-facts">
             <div><dt>Source</dt><dd><i>${esc(a.latin)}</i></dd></div>
-            <div><dt>Formula</dt><dd>${esc(a.formula)}</dd></div>
+            <div><dt>Formula</dt><dd class="dd-formula">${esc(a.formula)}</dd></div>
             <div><dt>${esc(a.figure.label)}</dt><dd>${esc(a.figure.value)}</dd></div>
             <div><dt>Reading</dt><dd>${a.minutes} min</dd></div>
           </dl>

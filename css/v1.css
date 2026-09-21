@@ -214,6 +214,7 @@ html[data-style="1"] {
 [data-style="1"] .entry {
   grid-template-areas: "formula title kind meta" "formula dek kind meta";
   grid-template-rows: auto 1fr;
+  row-gap: 0;
   align-items: start;
   padding-block: 24px;
   transition: background-color 0.25s ease, color 0.25s ease;
