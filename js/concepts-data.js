@@ -9,7 +9,8 @@
 //   shelf     cabinet shelf        room   museum room
 //   map       x: food 0 → drug 1, y: old 0 → new 1 (Food ↔ Drug Map)
 //   lenses    which sections belong to which lens (Six Lenses, Prescription Pad)
-//   facts     single claims with a certainty level (Facts, Six Lenses, Pad)
+//   facts     single claims with a certainty level (Facts, Six Lenses, Pad);
+//             also = other articles the claim touches
 //   events    dated moments (Timeline); reversal = science changed its mind
 //   questions plain "why / what" questions a section answers
 window.CONCEPTS = (() => {
@@ -183,7 +184,7 @@ window.CONCEPTS = (() => {
       lenses: { how: [0], use: [1, 3], debate: [2] },
       facts: [
         { id: "oj-cup", text: "One 240 ml cup holds about 124 mg of vitamin C and nearly 500 mg of potassium.", level: "certain", section: 0, ref: 0 },
-        { id: "oj-metabolism", text: "Orange juice supports the metabolism as a source of easy sugar and potassium.", level: "fringe", section: 1 },
+        { id: "oj-metabolism", text: "Orange juice supports the metabolism as a source of easy sugar and potassium.", level: "fringe", section: 1, also: ["ray-peat"] },
         { id: "oj-diabetes", text: "Drinking a lot of juice raises the risk of weight gain and type 2 diabetes.", level: "debated", section: 2, ref: 1 },
       ],
       events: [{ year: 2015, label: "BMJ study links sugary drinks, including juice, to diabetes", section: 2 }],
@@ -209,7 +210,7 @@ window.CONCEPTS = (() => {
       lenses: { how: [0], debate: [1], use: [2, 3] },
       facts: [
         { id: "gelatin-glycine", text: "Every third building block in collagen is glycine.", level: "certain", section: 0 },
-        { id: "gelatin-balance", text: "Adding gelatin balances the methionine people get from muscle meat.", level: "debated", section: 1, ref: 1 },
+        { id: "gelatin-balance", text: "Adding gelatin balances the methionine people get from muscle meat.", level: "debated", section: 1, ref: 1, also: ["ray-peat"] },
         { id: "gelatin-sleep", text: "3 g of glycine before bed helps people feel better rested.", level: "debated", section: 2, ref: 0 },
         { id: "gelatin-incomplete", text: "Gelatin is not a complete protein and can't replace a meal.", level: "certain", section: 3 },
       ],
@@ -238,7 +239,7 @@ window.CONCEPTS = (() => {
       lenses: { how: [2], use: [0], debate: [1] },
       facts: [
         { id: "carrot-fibre", text: "100 g of raw carrot has 2.8 g of fibre and over 8 mg of beta-carotene.", level: "certain", section: 2, ref: 0 },
-        { id: "carrot-toxins", text: "Raw carrot fibre carries bacterial toxins and excess oestrogen out of the gut.", level: "fringe", section: 1, ref: 1 },
+        { id: "carrot-toxins", text: "Raw carrot fibre carries bacterial toxins and excess oestrogen out of the gut.", level: "fringe", section: 1, ref: 1, also: ["ray-peat"] },
       ],
       events: [{ year: 1997, label: "Peat's newsletter on oestrogen and the gut", section: 1 }],
       questions: [

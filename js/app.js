@@ -95,6 +95,7 @@
   //   section    (sec, i) => html  extra markup after each section
   //   aside      html              column beside the body
   //   bottom     html              after the body, before sources
+  //   sectionClass (i) => string    extra class on each section
   //   className  string            extra class on <article>
   function articleView(a, opts = {}) {
     const i = articles.indexOf(a);
@@ -105,7 +106,7 @@
       a.sections
         .map(
           (sec, n) => `
-            <section id="sec-${n}" tabindex="-1">
+            <section id="sec-${n}" tabindex="-1" class="${opts.sectionClass ? opts.sectionClass(n) : ""}">
               <h2>${esc(sec.h)}</h2>
               ${sec.p.map((p) => `<p>${esc(p)}</p>`).join("")}
               ${opts.section ? opts.section(sec, n) : ""}
@@ -286,7 +287,7 @@
 
   const currentLayout = () => layouts.get(layoutId) || layouts.get("0");
 
-  function setStyle(next, { persist = true } = {}) {
+  function setStyle(next, { persist = true, draw = true } = {}) {
     if (!STYLES[next]) return;
     style = next;
     root.dataset.style = next;
@@ -299,10 +300,10 @@
       btn.setAttribute("aria-checked", String(btn.dataset.v === next));
       btn.tabIndex = btn.dataset.v === next ? 0 : -1;
     });
-    render(false);
+    if (draw) render(false);
   }
 
-  function setLayout(next, { persist = true } = {}) {
+  function setLayout(next, { persist = true, draw = true } = {}) {
     if (!layouts.has(next)) return;
     const changed = next !== layoutId;
     layoutId = next;
@@ -316,7 +317,7 @@
     const note = document.getElementById("layout-skill");
     if (note) note.textContent = currentLayout().skill;
     if (changed) lastRoute = null; // a new layout always starts at the top
-    render(false, { homeIfMissing: changed });
+    if (draw) render(false, { homeIfMissing: changed });
   }
 
   function stepLayout(step) {
@@ -338,12 +339,15 @@
     }
     const own = layout.route?.(parts);
     if (own) return { key: parts.join("/"), ...own };
-    const article = parts.length === 1 ? bySlug(head) : null;
-    if (article) {
+    // #/<slug> or #/<slug>/sec-2 (the article, opened at one section)
+    const article = bySlug(head);
+    const section = parts[1];
+    if (article && (parts.length === 1 || (parts.length === 2 && /^sec-\d+$/.test(section)))) {
       return {
         key: head,
         html: layout.article ? layout.article(article) : articleView(article),
         title: `${article.title} · Apothecary`,
+        focus: section,
       };
     }
     return null;
@@ -374,6 +378,7 @@
     view.innerHTML = page.html;
     document.title = page.title;
 
+    const firstRender = lastRoute === null;
     if (page.key !== lastRoute) {
       view.classList.remove("enter");
       void view.offsetWidth; // restart the entrance animation
@@ -385,6 +390,13 @@
     lastRoute = page.key;
 
     currentLayout().mount?.(view);
+    if (page.focus && (navigated || firstRender)) {
+      const target = document.getElementById(page.focus);
+      if (target) {
+        target.scrollIntoView({ block: "start" });
+        target.focus({ preventScroll: true });
+      }
+    }
     // Canvas pieces (fern, lens) draw themselves into the fresh markup.
     window.dispatchEvent(new CustomEvent("viewrender", { detail: { style, layout: layoutId } }));
   }
@@ -472,8 +484,8 @@
   window.addEventListener("DOMContentLoaded", () => {
     buildSwitcher();
     const initialLayout = pick(params.get("l"), readStored(LAYOUT_KEY), (v) => layouts.has(v), "0");
-    root.dataset.style = style;
-    setLayout(initialLayout, { persist: params.has("l") });
-    setStyle(style, { persist: params.has("v") });
+    setLayout(initialLayout, { persist: params.has("l"), draw: false });
+    setStyle(style, { persist: params.has("v"), draw: false });
+    render(false);
   });
 })();
