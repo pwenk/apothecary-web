@@ -12,6 +12,26 @@ The site ships three complete visual styles. Switch with the pill at the bottom 
 
 The first round of styles (Assay, Metabolic, Herbarium) is saved at the git tag `styles-round-1`.
 
+## Layouts
+
+Separately from the look, the site can be **structured** eleven ways: the original (Classic) plus the ten concepts in `planning/structure-concepts.md`. Pick one with the **Layout** row of the switcher, the keys **[** and **]**, or the URL (`?l=0` … `?l=10`). Any layout works with any style, e.g. `?l=9&v=2`.
+
+| # | Layout | Thinking skill | Idea |
+|---|--------|----------------|------|
+| 0 | Classic | – | The original home page and article |
+| 1 | Medicine Cabinet | Drunk Claude | Shelves of bottles; each bottle is an article |
+| 2 | Facts, not articles | Lateral thinking | A wall of single claims marked by certainty (`#/fact/<id>`) |
+| 3 | Timeline Spine | Oblique Strategies | 1843 → today; reversed advice is marked |
+| 4 | Prescription Pad | Creative Director | Five fixed boxes per article (`#/<slug>/<box>`) |
+| 5 | Depth Dial | TRIZ + first principles | Every article at Glance, Gist or Full |
+| 6 | Start from the question | Flux | Searchable "why / what" questions (`#/q/<id>`) |
+| 7 | Food ↔ Drug Map | Janusian thinking | Articles pinned on a food → drug, old → new map |
+| 8 | Museum Walk | SCAMPER + How might we | Rooms and a set route (`#/room/<key>`) |
+| 9 | Accession Register | Via negativa | One sortable ledger and a plain article |
+| 10 | Six Lenses | Six Thinking Hats | Articles × lenses grid (`#/lens/<key>`) |
+
+Any article can be opened at one section with `#/<slug>/sec-<n>`.
+
 ## Run locally
 
 No build step. Serve the folder with any static server:
@@ -26,11 +46,14 @@ python3 -m http.server 8000
 - `index.html` – page shell, fonts, style switcher
 - `js/articles.js` – all article content
 - `js/specimens.js` – one drawn specimen (SVG) per article
-- `js/app.js` – routing (`#/slug`) and style switching
+- `js/concepts-data.js` – extra fields the layouts need (summaries, facts, dates, questions, map spots)
+- `js/app.js` – routing, style and layout switching, the shared article page
+- `js/layouts/NN-name.js` – one file per layout; each calls `APO.register(...)`
 - `js/fern.js` – the Barnsley fern for style 2
 - `js/lens.js` – drifting cells in the microscope lens for style 3
 - `css/base.css` – shared structure
 - `css/v1.css`, `css/v2.css`, `css/v3.css` – one file per style
+- `css/layouts.css` – the ten layouts, built only from the style tokens
 
 ## Deploy
 
