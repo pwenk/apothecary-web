@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-style="1">
+<html lang="en" data-style="1" data-layout="0">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -11,11 +11,17 @@
     <meta property="og:type" content="website" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <script>
-      // Apply the saved style before first paint so the page never flashes the wrong look.
+      // Apply the saved style and layout before first paint so the page never flashes the wrong look.
       (function () {
-        var v = new URLSearchParams(location.search).get("v");
-        try { v = v || localStorage.getItem("apothecary-style"); } catch (e) {}
+        var q = new URLSearchParams(location.search);
+        var v = q.get("v");
+        var l = q.get("l");
+        try {
+          v = v || localStorage.getItem("apothecary-style");
+          l = l || localStorage.getItem("apothecary-layout");
+        } catch (e) {}
         if (v === "1" || v === "2" || v === "3") document.documentElement.dataset.style = v;
+        if (/^(10|[0-9])$/.test(l || "")) document.documentElement.dataset.layout = l;
       })();
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -28,6 +34,7 @@
     <link rel="stylesheet" href="css/v1.css" />
     <link rel="stylesheet" href="css/v2.css" />
     <link rel="stylesheet" href="css/v3.css" />
+    <link rel="stylesheet" href="css/layouts.css" />
   </head>
   <body>
     <a class="skip" href="#view">Skip to content</a>
@@ -47,19 +54,32 @@
 
     <footer class="site-foot">
       <p>Apothecary publishes general information, not medical advice. Always talk to a doctor or pharmacist before you start, stop or change a medicine.</p>
-      <p class="site-foot-small">© 2026 Apothecary · Press 1, 2 or 3 to change the style</p>
+      <p class="site-foot-small">© 2026 Apothecary · Press 1, 2 or 3 to change the style, [ and ] to change the layout</p>
     </footer>
 
-    <div class="switcher" role="group" aria-label="Page style">
-      <span class="switcher-label" id="switcher-label">Style</span>
-      <div id="switcher-group" class="switcher-group" role="radiogroup" aria-labelledby="switcher-label"></div>
+    <div class="switcher" role="group" aria-label="Page layout and style">
+      <div class="switch-row layout-row">
+        <label class="switcher-label" for="layout-select">Layout</label>
+        <button type="button" class="layout-step" id="layout-prev" aria-label="Previous layout">‹</button>
+        <select id="layout-select" class="layout-select" aria-describedby="layout-skill"></select>
+        <button type="button" class="layout-step" id="layout-next" aria-label="Next layout">›</button>
+        <span class="layout-skill" id="layout-skill" aria-live="polite"></span>
+      </div>
+      <div class="switch-row">
+        <span class="switcher-label" id="switcher-label">Style</span>
+        <div id="switcher-group" class="switcher-group" role="radiogroup" aria-labelledby="switcher-label"></div>
+      </div>
     </div>
 
     <noscript><p class="noscript">Apothecary needs JavaScript to show its articles.</p></noscript>
 
     <script src="js/articles.js"></script>
     <script src="js/specimens.js"></script>
+    <script src="js/concepts-data.js"></script>
     <script src="js/app.js"></script>
+    <script src="js/layouts/05-depth.js"></script>
+    <script src="js/layouts/07-map.js"></script>
+    <script src="js/layouts/09-register.js"></script>
     <script src="js/fern.js"></script>
     <script src="js/lens.js"></script>
   </body>

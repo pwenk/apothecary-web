@@ -33,11 +33,13 @@
     },
   };
 
-  const STORAGE_KEY = "apothecary-style";
+  const STYLE_KEY = "apothecary-style";
+  const LAYOUT_KEY = "apothecary-layout";
   const root = document.documentElement;
   const view = document.getElementById("view");
   const articles = window.ARTICLES;
   const specimens = window.SPECIMENS;
+  const concepts = window.CONCEPTS;
 
   const esc = (s) =>
     String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -47,48 +49,142 @@
   const glyph = (slug, cls = "glyph") =>
     `<svg class="${cls}" viewBox="0 0 200 300" aria-hidden="true" focusable="false">${specimens[slug] || ""}</svg>`;
 
-  // ---------- style state ----------
-  function readStoredStyle() {
+  const extra = (a) => concepts.bySlug[a.slug];
+  const bySlug = (slug) => articles.find((a) => a.slug === slug);
+
+  // Stored preferences are a convenience only; a blocked storage never breaks the page.
+  function readStored(key) {
     try {
-      return localStorage.getItem(STORAGE_KEY);
+      return localStorage.getItem(key);
     } catch {
       return null;
     }
   }
 
-  function initialStyle() {
-    const fromUrl = new URLSearchParams(location.search).get("v");
-    const candidate = fromUrl || readStoredStyle() || "1";
-    return STYLES[candidate] ? candidate : "1";
-  }
-
-  let style = initialStyle();
-
-  function setStyle(next, { persist = true } = {}) {
-    if (!STYLES[next]) return;
-    style = next;
-    root.dataset.style = next;
-    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", STYLES[next].themeColor);
-    if (persist) {
-      try {
-        localStorage.setItem(STORAGE_KEY, next);
-      } catch {
-        /* storage blocked: the style still applies for this visit */
-      }
-      const url = new URL(location.href);
-      url.searchParams.set("v", next);
-      history.replaceState(null, "", url);
+  function writeStored(key, value) {
+    try {
+      localStorage.setItem(key, value);
+    } catch {
+      /* storage blocked: the choice still applies for this visit */
     }
-    document.querySelectorAll(".switch-btn").forEach((btn) => {
-      btn.setAttribute("aria-checked", String(btn.dataset.v === next));
-      btn.tabIndex = btn.dataset.v === next ? 0 : -1;
-    });
-    render(false);
   }
 
-  // ---------- views ----------
+  function setSearchParam(name, value) {
+    const url = new URL(location.href);
+    url.searchParams.set(name, value);
+    history.replaceState(null, "", url);
+  }
 
-  // The hero object changes with the style: a mounted sheet, a sun print, a lens.
+  // ---------- shared views ----------
+
+  function aboutSection() {
+    return `
+      <section class="about" id="about" aria-labelledby="about-title">
+        <h2 id="about-title">About Apothecary</h2>
+        <p>Apothecary is a small reading room for curious people. We write about drugs, foods and hormones in plain words, name our sources, and say clearly when an idea is still unproven. Nothing here is medical advice. Please talk to a doctor or pharmacist before you start or stop any medicine.</p>
+      </section>`;
+  }
+
+  // The article page every layout starts from. Layouts add their own pieces
+  // through the options instead of rewriting the page:
+  //   back       { href, label }   link above the title
+  //   next       article           "next specimen" at the end
+  //   nextLabel  string            text above the next title
+  //   top        html              between the header and the body
+  //   body       html              replaces the default body
+  //   section    (sec, i) => html  extra markup after each section
+  //   aside      html              column beside the body
+  //   bottom     html              after the body, before sources
+  //   className  string            extra class on <article>
+  function articleView(a, opts = {}) {
+    const i = articles.indexOf(a);
+    const next = opts.next === undefined ? articles[(i + 1) % articles.length] : opts.next;
+    const back = opts.back || { href: "#/", label: "← All specimens" };
+    const body =
+      opts.body ??
+      a.sections
+        .map(
+          (sec, n) => `
+            <section id="sec-${n}" tabindex="-1">
+              <h2>${esc(sec.h)}</h2>
+              ${sec.p.map((p) => `<p>${esc(p)}</p>`).join("")}
+              ${opts.section ? opts.section(sec, n) : ""}
+            </section>`
+        )
+        .join("");
+    const refs = a.refs.map((r) => `<li>${esc(r)}</li>`).join("");
+    const bodyBlock = opts.aside
+      ? `<div class="with-aside"><div class="post-body">${body}</div><aside class="post-aside">${opts.aside}</aside></div>`
+      : `<div class="post-body">${body}</div>`;
+    const nextBlock = next
+      ? `<a class="post-next" href="#/${esc(next.slug)}">
+           <span>${esc(opts.nextLabel || "Next specimen")} · <i>${esc(next.latin)}</i></span>
+           <strong>${esc(next.title)}</strong>
+         </a>`
+      : "";
+    return `
+      <article class="post ${opts.className || ""}">
+        <header class="post-head">
+          <div class="post-intro">
+            <a class="back" href="${esc(back.href)}">${esc(back.label)}</a>
+            <p class="post-kicker"><span>${accession(i)}</span><span>${esc(a.kind)}</span></p>
+            <h1 class="post-title">${esc(a.title)}</h1>
+            <p class="post-dek">${esc(a.dek)}</p>
+          </div>
+          <figure class="post-specimen">
+            <span class="tape tape-a" aria-hidden="true"></span>
+            ${glyph(a.slug, "glyph post-glyph")}
+            <figcaption><i>${esc(a.latin)}</i><span>${esc(a.common)}</span></figcaption>
+          </figure>
+          <dl class="post-facts">
+            <div><dt>Family</dt><dd>${esc(a.family)}</dd></div>
+            <div><dt>Formula</dt><dd class="dd-formula">${esc(a.formula)}</dd></div>
+            <div><dt>${esc(a.figure.label)}</dt><dd>${esc(a.figure.value)}</dd></div>
+            <div><dt>Reading</dt><dd>${a.minutes} min</dd></div>
+          </dl>
+        </header>
+        ${opts.top || ""}
+        ${bodyBlock}
+        ${opts.bottom || ""}
+        <footer class="post-foot">
+          <section class="post-refs" aria-labelledby="refs-title">
+            <h2 id="refs-title">Sources</h2>
+            <ol>${refs}</ol>
+          </section>
+          ${nextBlock}
+        </footer>
+      </article>`;
+  }
+
+  function notFoundView() {
+    return `
+      <section class="post">
+        <header class="post-head">
+          <div class="post-intro">
+            <a class="back" href="#/">← All specimens</a>
+            <h1 class="post-title">We couldn't find that specimen</h1>
+            <p class="post-dek">The link may be old or mistyped. Head back to the collection to browse everything we have.</p>
+          </div>
+        </header>
+      </section>`;
+  }
+
+  // ---------- layouts ----------
+  // Each layout file calls APO.register({ id, name, skill, home, article?, route?, mount? }).
+  //   home()          html for the start page
+  //   article(a)      html for one article (defaults to articleView)
+  //   route(parts)    { html, title } for the layout's own pages, or null
+  //   mount(view)     wire up behaviour after each render
+  const layouts = new Map();
+
+  function register(layout) {
+    layouts.set(layout.id, layout);
+  }
+
+  const layoutIds = () => [...layouts.keys()].sort((a, b) => Number(a) - Number(b));
+
+  // ---------- classic layout (the original site) ----------
+
   function heroSign() {
     const lead = articles[0];
     if (style === "1") {
@@ -149,119 +245,160 @@
       </li>`;
   }
 
-  function homeView() {
-    const s = STYLES[style];
-    return `
-      <section class="hero">
-        <div class="hero-copy">
-          <p class="hero-kicker">${esc(s.kicker)}</p>
-          <h1 class="hero-title">${esc(s.title)}</h1>
-          <p class="hero-lede">${esc(s.lede)}</p>
-          <a class="hero-cta" href="#/${esc(articles[0].slug)}">${esc(s.cta)}</a>
-        </div>
-        ${heroSign()}
-      </section>
-      <section class="index" id="articles" aria-labelledby="index-title">
-        <header class="index-head">
-          <h2 id="index-title">${esc(s.indexTitle)}</h2>
-          <p>${articles.length} specimens</p>
-        </header>
-        <ul class="entries">${articles.map(entry).join("")}</ul>
-      </section>
-      <section class="about" id="about" aria-labelledby="about-title">
-        <h2 id="about-title">About Apothecary</h2>
-        <p>Apothecary is a small reading room for curious people. We write about drugs, foods and hormones in plain words, name our sources, and say clearly when an idea is still unproven. Nothing here is medical advice. Please talk to a doctor or pharmacist before you start or stop any medicine.</p>
-      </section>`;
+  register({
+    id: "0",
+    name: "Classic",
+    skill: "The original site",
+    home() {
+      const s = STYLES[style];
+      return `
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="hero-kicker">${esc(s.kicker)}</p>
+            <h1 class="hero-title">${esc(s.title)}</h1>
+            <p class="hero-lede">${esc(s.lede)}</p>
+            <a class="hero-cta" href="#/${esc(articles[0].slug)}">${esc(s.cta)}</a>
+          </div>
+          ${heroSign()}
+        </section>
+        <section class="index" id="articles" aria-labelledby="index-title">
+          <header class="index-head">
+            <h2 id="index-title">${esc(s.indexTitle)}</h2>
+            <p>${articles.length} specimens</p>
+          </header>
+          <ul class="entries">${articles.map(entry).join("")}</ul>
+        </section>
+        ${aboutSection()}`;
+    },
+  });
+
+  // ---------- state ----------
+
+  function pick(fromUrl, stored, valid, fallback) {
+    if (valid(fromUrl)) return fromUrl;
+    if (valid(stored)) return stored;
+    return fallback;
   }
 
-  function articleView(a) {
-    const i = articles.indexOf(a);
-    const next = articles[(i + 1) % articles.length];
-    const body = a.sections
-      .map((sec) => `<section><h2>${esc(sec.h)}</h2>${sec.p.map((p) => `<p>${esc(p)}</p>`).join("")}</section>`)
-      .join("");
-    const refs = a.refs.map((r) => `<li>${esc(r)}</li>`).join("");
-    return `
-      <article class="post">
-        <header class="post-head">
-          <div class="post-intro">
-            <a class="back" href="#/">← All specimens</a>
-            <p class="post-kicker"><span>${accession(i)}</span><span>${esc(a.kind)}</span></p>
-            <h1 class="post-title">${esc(a.title)}</h1>
-            <p class="post-dek">${esc(a.dek)}</p>
-          </div>
-          <figure class="post-specimen">
-            <span class="tape tape-a" aria-hidden="true"></span>
-            ${glyph(a.slug, "glyph post-glyph")}
-            <figcaption><i>${esc(a.latin)}</i><span>${esc(a.common)}</span></figcaption>
-          </figure>
-          <dl class="post-facts">
-            <div><dt>Family</dt><dd>${esc(a.family)}</dd></div>
-            <div><dt>Formula</dt><dd class="dd-formula">${esc(a.formula)}</dd></div>
-            <div><dt>${esc(a.figure.label)}</dt><dd>${esc(a.figure.value)}</dd></div>
-            <div><dt>Reading</dt><dd>${a.minutes} min</dd></div>
-          </dl>
-        </header>
-        <div class="post-body">${body}</div>
-        <footer class="post-foot">
-          <section class="post-refs" aria-labelledby="refs-title">
-            <h2 id="refs-title">Sources</h2>
-            <ol>${refs}</ol>
-          </section>
-          <a class="post-next" href="#/${esc(next.slug)}">
-            <span>Next specimen · <i>${esc(next.latin)}</i></span>
-            <strong>${esc(next.title)}</strong>
-          </a>
-        </footer>
-      </article>`;
+  const params = new URLSearchParams(location.search);
+  let style = pick(params.get("v"), readStored(STYLE_KEY), (v) => !!STYLES[v], "1");
+  let layoutId = "0"; // settled once every layout file has registered
+
+  const currentLayout = () => layouts.get(layoutId) || layouts.get("0");
+
+  function setStyle(next, { persist = true } = {}) {
+    if (!STYLES[next]) return;
+    style = next;
+    root.dataset.style = next;
+    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", STYLES[next].themeColor);
+    if (persist) {
+      writeStored(STYLE_KEY, next);
+      setSearchParam("v", next);
+    }
+    document.querySelectorAll(".switch-btn").forEach((btn) => {
+      btn.setAttribute("aria-checked", String(btn.dataset.v === next));
+      btn.tabIndex = btn.dataset.v === next ? 0 : -1;
+    });
+    render(false);
   }
 
-  function notFoundView() {
-    return `
-      <section class="post">
-        <header class="post-head">
-          <div class="post-intro">
-            <a class="back" href="#/">← All specimens</a>
-            <h1 class="post-title">We couldn't find that specimen</h1>
-            <p class="post-dek">The link may be old or mistyped. Head back to the collection to browse everything we have.</p>
-          </div>
-        </header>
-      </section>`;
+  function setLayout(next, { persist = true } = {}) {
+    if (!layouts.has(next)) return;
+    const changed = next !== layoutId;
+    layoutId = next;
+    root.dataset.layout = next;
+    if (persist) {
+      writeStored(LAYOUT_KEY, next);
+      setSearchParam("l", next);
+    }
+    const select = document.getElementById("layout-select");
+    if (select) select.value = next;
+    const note = document.getElementById("layout-skill");
+    if (note) note.textContent = currentLayout().skill;
+    if (changed) lastRoute = null; // a new layout always starts at the top
+    render(false, { homeIfMissing: changed });
+  }
+
+  function stepLayout(step) {
+    const ids = layoutIds();
+    const next = ids[(ids.indexOf(layoutId) + step + ids.length) % ids.length];
+    setLayout(next);
   }
 
   // ---------- routing ----------
+  // Hash routes: #/ home · #/articles, #/about anchors on home · #/<slug> article
+  // · anything else is offered to the current layout (e.g. #/room/kitchen).
   let lastRoute = null;
 
-  function render(navigated = true) {
-    const slug = decodeURIComponent(location.hash.replace(/^#\/?/, ""));
-    const isAnchor = slug === "articles" || slug === "about";
-    const article = articles.find((a) => a.slug === slug);
-    const route = article ? slug : !slug || isAnchor ? "home" : "missing";
-
-    if (route === "home") {
-      view.innerHTML = homeView();
-      document.title = "Apothecary · Field notes on drugs, food & metabolism";
-    } else if (article) {
-      view.innerHTML = articleView(article);
-      document.title = `${article.title} · Apothecary`;
-    } else {
-      view.innerHTML = notFoundView();
-      document.title = "Not found · Apothecary";
+  function resolve(parts) {
+    const layout = currentLayout();
+    const [head = ""] = parts;
+    if (parts.length <= 1 && (head === "" || head === "articles" || head === "about")) {
+      return { key: "home", html: layout.home(), title: "Apothecary · Field notes on drugs, food & metabolism", anchor: head || null };
     }
+    const own = layout.route?.(parts);
+    if (own) return { key: parts.join("/"), ...own };
+    const article = parts.length === 1 ? bySlug(head) : null;
+    if (article) {
+      return {
+        key: head,
+        html: layout.article ? layout.article(article) : articleView(article),
+        title: `${article.title} · Apothecary`,
+      };
+    }
+    return null;
+  }
 
-    if (route !== lastRoute) {
+  // navigated: the reader followed a link (move focus, honour anchors).
+  // homeIfMissing: a layout switch may leave us on a page that layout lacks.
+  function render(navigated = true, { homeIfMissing = false } = {}) {
+    const parts = location.hash
+      .replace(/^#\/?/, "")
+      .split("/")
+      .filter((p, n) => p !== "" || n === 0)
+      .map((p) => {
+        try {
+          return decodeURIComponent(p);
+        } catch {
+          return p;
+        }
+      });
+
+    let page = resolve(parts);
+    if (!page && homeIfMissing) {
+      history.replaceState(null, "", `${location.pathname}${location.search}#/`);
+      page = resolve([""]);
+    }
+    if (!page) page = { key: "missing", html: notFoundView(), title: "Not found · Apothecary" };
+
+    view.innerHTML = page.html;
+    document.title = page.title;
+
+    if (page.key !== lastRoute) {
       view.classList.remove("enter");
       void view.offsetWidth; // restart the entrance animation
       view.classList.add("enter");
-      if (!isAnchor) window.scrollTo(0, 0);
-      if (lastRoute !== null) view.focus({ preventScroll: true });
+      if (!page.anchor) window.scrollTo(0, 0);
+      if (lastRoute !== null && navigated) view.focus({ preventScroll: true });
     }
-    if (isAnchor && navigated) document.getElementById(slug)?.scrollIntoView();
-    lastRoute = route;
+    if (page.anchor && navigated) document.getElementById(page.anchor)?.scrollIntoView();
+    lastRoute = page.key;
 
+    currentLayout().mount?.(view);
     // Canvas pieces (fern, lens) draw themselves into the fresh markup.
-    window.dispatchEvent(new CustomEvent("viewrender", { detail: { style } }));
+    window.dispatchEvent(new CustomEvent("viewrender", { detail: { style, layout: layoutId } }));
   }
+
+  // In-page jumps (buttons with data-jump="sec-2") that don't touch the hash router.
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-jump]");
+    if (!btn) return;
+    const target = document.getElementById(btn.dataset.jump);
+    if (!target) return;
+    e.preventDefault();
+    target.scrollIntoView({ block: "start" });
+    target.focus({ preventScroll: true });
+  });
 
   // ---------- switcher ----------
   function buildSwitcher() {
@@ -291,19 +428,52 @@
       document.getElementById(`style-${next}`).focus();
     });
 
-    // Number keys 1–3 switch style anywhere, unless the reader is typing.
+    const select = document.getElementById("layout-select");
+    select.innerHTML = layoutIds()
+      .map((id) => `<option value="${id}">${id === "0" ? "" : `${id} · `}${esc(layouts.get(id).name)}</option>`)
+      .join("");
+    select.addEventListener("change", () => setLayout(select.value));
+    document.getElementById("layout-prev").addEventListener("click", () => stepLayout(-1));
+    document.getElementById("layout-next").addEventListener("click", () => stepLayout(1));
+
+    // Keys 1–3 switch style, [ and ] step through layouts, unless the reader is typing.
     document.addEventListener("keydown", (e) => {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
-      if (e.target.closest("input, textarea, [contenteditable]")) return;
+      if (e.target.closest("input, textarea, select, [contenteditable]")) return;
       if (STYLES[e.key]) setStyle(e.key);
+      else if (e.key === "[") stepLayout(-1);
+      else if (e.key === "]") stepLayout(1);
     });
   }
 
-  // Canvas scripts load after this one, so hand them the first render once the page is ready.
-  buildSwitcher();
+  window.APO = {
+    STYLES,
+    articles,
+    concepts,
+    esc,
+    glyph,
+    accession,
+    extra,
+    bySlug,
+    readStored,
+    writeStored,
+    articleView,
+    aboutSection,
+    register,
+    get style() {
+      return style;
+    },
+    rerender: () => render(false),
+  };
+
+  // Layout files register before DOMContentLoaded (they are plain scripts after
+  // this one), so the switcher and first render see every layout.
   window.addEventListener("hashchange", () => render());
   window.addEventListener("DOMContentLoaded", () => {
-    setStyle(style, { persist: new URLSearchParams(location.search).has("v") });
-    if (location.hash.length > 2) render();
+    buildSwitcher();
+    const initialLayout = pick(params.get("l"), readStored(LAYOUT_KEY), (v) => layouts.has(v), "0");
+    root.dataset.style = style;
+    setLayout(initialLayout, { persist: params.has("l") });
+    setStyle(style, { persist: params.has("v") });
   });
 })();
