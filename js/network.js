@@ -244,7 +244,7 @@
           // Charge falls off with distance (like d3's many-body force);
           // heavy article nodes push harder so they spread out.
           const d = Math.max(Math.sqrt(d2), 12);
-          const f = (140 * spread * alpha * Math.sqrt(p.mass * q.mass)) / d;
+          const f = (60 * spread * alpha * p.mass * q.mass) / d;
           const fx = (dx / d) * f;
           const fy = (dy / d) * f;
           p.vx -= fx / p.mass;
@@ -257,7 +257,7 @@
         const dx = l.t.x - l.s.x;
         const dy = l.t.y - l.s.y;
         const d = Math.sqrt(dx * dx + dy * dy) || 1;
-        const k = ((d - l.len * spread) / d) * 0.06 * alpha * Math.min(1 + l.w * 0.15, 1.6);
+        const k = ((d - l.len * spread) / d) * 0.1 * alpha * Math.min(1 + l.w * 0.15, 1.6);
         l.s.vx += dx * k;
         l.s.vy += dy * k;
         l.t.vx -= dx * k;
@@ -299,7 +299,7 @@
     const nodes = [...set].map((key) => {
       const degree = neighbours(key).filter((n) => set.has(n.key)).length;
       const art = isArticle(key);
-      return { key, name: art ? nameOf(key).split(",")[0] : nameOf(key), kind: kindOf(key), article: art, degree, mass: art ? 3 : 1 + degree * 0.15, r: art ? 11 : 3.5 + Math.min(degree, 6) * 0.7 };
+      return { key, name: art ? nameOf(key).split(",")[0] : nameOf(key), kind: kindOf(key), article: art, degree, mass: art ? 4 : 1 + degree * 0.1, r: art ? 11 : 3.5 + Math.min(degree, 6) * 0.7 };
     });
     const links = allEdges
       .filter((e) => set.has(e.a) && set.has(e.b))

@@ -16,7 +16,7 @@ The first round of styles (Assay, Metabolic, Herbarium) is saved at the git tag 
 
 ## Layouts
 
-Separately from the look, the site can be **structured** eleven ways: the original (Classic) plus the ten concepts in `planning/structure-concepts.md`. Pick one with the **Layout** row of the switcher, the keys **[** and **]**, or the URL (`?l=0` … `?l=10`). Any layout works with any style, e.g. `?l=9&v=2`.
+Separately from the look, the site can be **structured** 24 ways: the original (Classic), the ten concepts in `planning/structure-concepts.md` (1–10) and the thirteen network concepts in `planning/network-ideas.md` (11–23). Pick one with the **Layout** row of the switcher, the keys **[** and **]**, or the URL (`?l=0` … `?l=23`). Any layout works with any style, e.g. `?l=9&v=2`.
 
 | # | Layout | Thinking skill | Idea |
 |---|--------|----------------|------|
@@ -31,8 +31,23 @@ Separately from the look, the site can be **structured** eleven ways: the origin
 | 8 | Museum Walk | SCAMPER + How might we | Rooms and a set route (`#/room/<key>`) |
 | 9 | Accession Register | Via negativa | One sortable ledger and a plain article |
 | 10 | Six Lenses | Six Thinking Hats | Articles × lenses grid (`#/lens/<key>`) |
+| 11 | Seating Plan | Drunk Claude | Substances as dinner guests: who gets on, who must sit apart (`#/seat/<key>`) |
+| 12 | Pull a Thread | Lateral thinking | Three threads per article; your path is a shareable string (`#/trail/<a,b,c>`) |
+| 13 | Back-of-Book Index | Oblique Strategies | A book index with article·section numbers |
+| 14 | Transit Map | Creative Director | Health lines, substance stations, interchanges (`#/line/<key>`) |
+| 15 | Earned Links | TRIZ | A section's links appear in the margin once you finish reading it |
+| 16 | My Shelf | Flux | Tick what you have; see what the articles say about it together (`#/shelf/<a+b>`) |
+| 17 | Abstraction Ladder | Creative Thinking for Research | Climb up to wider groups or down into chemistry (`#/rung/<key>`) |
+| 18 | Family Tree | claude-brainstorm | Every article traced back to its plant, microbe or animal |
+| 19 | Glossary Hubs | Via negativa | Shared words underlined with definitions; each word has a page |
+| 20 | Body Map | First principles | Tap a part of the body to see what acts on it (`#/body/<key>`) |
+| 21 | Day Wheel | Perspective shift | A 24-hour wheel shaded by today's sun |
+| 22 | Argument Map | How might we | Claims joined by supports, contradicts, replaced by |
+| 23 | The Web | Obsidian graph view | A draggable, zoomable graph of everything as the home page, with local graphs and linked mentions |
 
-Any article can be opened at one section with `#/<slug>/sec-<n>`.
+Any article can be opened at one section with `#/<slug>/sec-<n>`. In layouts 11–23 every shared word has its own page at `#/term/<key>`.
+
+**How the network works:** `js/network-data.js` lists the shared words (terms) and a few hand-made, sourced relations. `js/network.js` scans every article for those words, so links appear by themselves as articles are written. A term with no article of its own is shown as "not written yet".
 
 ## Run locally
 
@@ -50,12 +65,16 @@ python3 -m http.server 8000
 - `js/specimens.js` – one drawn specimen (SVG) per article
 - `js/concepts-data.js` – extra fields the layouts need (summaries, facts, dates, questions, map spots)
 - `js/app.js` – routing, style and layout switching, the shared article page
+- `js/network-data.js` – terms, relations and the hand-placed data for the network layouts (lines, tree, ladder, body, day, arguments)
+- `js/network.js` – finds mentions, builds term pages and runs the small force-directed graph
+- `js/sun.js` – sun height from the reader's clock, for the Cyanotype colours and the Day Wheel
 - `js/layouts/NN-name.js` – one file per layout; each calls `APO.register(...)`
 - `js/fern.js` – the Barnsley fern for style 2
 - `js/lens.js` – drifting cells in the microscope lens for style 3
 - `css/base.css` – shared structure
 - `css/v1.css`, `css/v2.css`, `css/v3.css` – one file per style
 - `css/layouts.css` – the ten layouts, built only from the style tokens
+- `css/network.css` – the network layouts (11–23)
 
 ## Deploy
 
