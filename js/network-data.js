@@ -231,12 +231,12 @@ window.NETWORK = (() => {
   // 10 · Body Map. Hotspots on the outline, each showing a body term.
   // x, y in the 200 × 440 drawing.
   const BODY = [
-    { key: "liver", x: 100, y: 34, label: "Brain" },
+    { key: "liver", x: 100, y: 34, label: "Brain & liver" },
     { key: "teeth", x: 100, y: 62, label: "Teeth & gums" },
     { key: "thyroid", x: 100, y: 92, label: "Thyroid" },
     { key: "heart", x: 112, y: 138, label: "Heart" },
-    { key: "blood", x: 64, y: 168, label: "Blood" },
-    { key: "stomach", x: 90, y: 182, label: "Stomach" },
+    { key: "blood", x: 60, y: 146, label: "Blood" },
+    { key: "stomach", x: 92, y: 186, label: "Stomach" },
     { key: "gut", x: 104, y: 222, label: "Gut" },
     { key: "skin", x: 150, y: 204, label: "Skin" },
     { key: "bones", x: 80, y: 340, label: "Bones & tendons" },
@@ -249,7 +249,6 @@ window.NETWORK = (() => {
     { from: 630, label: "Between meals", text: "The raw carrot salad is often eaten between meals.", at: ["carrot-salad", 0] },
     { from: 660, to: 900, label: "Strong sun", text: "On doxycycline, skin can burn easily in the sun.", at: ["doxycycline", 3] },
     { from: 780, label: "Lunch", text: "A small glass of juice with food behaves differently from a litre on an empty stomach.", at: ["orange-juice", 2] },
-    { from: 960, label: "Afternoon", text: "A spoon of gelatin in a hot drink is one common way to take it.", at: ["gelatin", 3] },
     { from: 1350, label: "Before bed", text: "In a small study, 3 g of glycine before bed helped people feel better rested.", at: ["gelatin", 2] },
   ];
   // Things that run on a clock longer or shorter than a day.

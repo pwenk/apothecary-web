@@ -110,6 +110,13 @@
 
   window.SUN = {
     update: update,
+    // For the Day Wheel: sun height (degrees) and colour dials at any moment.
+    altitudeAt: function (date) {
+      return sunAt(date, guessPlace(date)).alt;
+    },
+    warmthAt: function (date) {
+      return warmth(sunAt(date, guessPlace(date)));
+    },
     get state() {
       return state;
     },
