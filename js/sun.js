@@ -1,6 +1,7 @@
 // The Cyanotype style follows the sun: Prussian blue while the sun is high,
-// warm tea-toned prints through golden hour, dim amber after dark (like
-// f.lux on a screen). Runs in <head> so the right colours paint first.
+// sunset orange through golden hour, and from sunset on amber on black with
+// no blue light at all (like f.lux on a screen). Runs in <head> so the right
+// colours paint first.
 //
 // No location is asked for. The browser's time zone gives a rough position:
 // the standard UTC offset stands in for longitude, and which half of the year
@@ -43,16 +44,19 @@
   }
 
   // Two dials, each 0 to 1: how far into golden hour, and how far into night.
-  // Evenings warm up slowly from mid-afternoon; mornings cool down quickly.
+  // Evenings turn orange slowly from mid-afternoon, and night is complete by
+  // the moment the sun touches the horizon. Mornings stay dark until sunrise,
+  // then cool back to blue quickly.
   function warmth(sun) {
-    if (sun.afternoon) return { dusk: clamp((25 - sun.alt) / 25), night: clamp(-sun.alt / 12) };
-    return { dusk: clamp((8 - sun.alt) / 10), night: clamp((-2 - sun.alt) / 10) };
+    var night = clamp((3 - sun.alt) / 3);
+    if (sun.afternoon) return { dusk: clamp((25 - sun.alt) / 22), night: night };
+    return { dusk: clamp((10 - sun.alt) / 7), night: night };
   }
 
   var FIXED = { day: { dusk: 0, night: 0 }, dusk: { dusk: 1, night: 0 }, night: { dusk: 1, night: 1 } };
   var PHASES = [
-    { key: "night", label: "Evening print", mark: "☾" },
-    { key: "dusk", label: "Golden hour print", mark: "◐" },
+    { key: "night", label: "Night print, no blue light", mark: "☾" },
+    { key: "dusk", label: "Sunset print", mark: "◐" },
     { key: "day", label: "Daylight print", mark: "☀" },
   ];
 
@@ -67,8 +71,8 @@
   function themeColor(w) {
     // Matches the --bg mix in v2.css closely enough for the browser bar.
     var day = [21, 53, 106];
-    var dusk = [75, 51, 34];
-    var night = [36, 22, 13];
+    var dusk = [156, 62, 14];
+    var night = [20, 8, 0];
     var mix = function (a, b, t) {
       return a.map(function (v, i) {
         return Math.round(v + (b[i] - v) * t);
@@ -81,7 +85,8 @@
   function update() {
     var now = new Date();
     var w = forced || warmth(sunAt(now, guessPlace(now)));
-    var phase = w.night > 0.5 ? PHASES[0] : w.dusk > 0.5 ? PHASES[1] : PHASES[2];
+    // "night" (and the no-blue filter in v2.css) only once the palette is fully night.
+    var phase = w.night >= 1 ? PHASES[0] : w.dusk > 0.5 ? PHASES[1] : PHASES[2];
     root.style.setProperty("--dusk", (w.dusk * 100).toFixed(1) + "%");
     root.style.setProperty("--night", (w.night * 100).toFixed(1) + "%");
     root.dataset.sun = phase.key;

@@ -20,22 +20,36 @@ html[data-style="2"] {
 }
 
 /* Following the sun. js/sun.js sets --dusk and --night (0% to 100%) from the
-   reader's clock. Day is the blue above; golden hour turns the print brown,
-   the way cyanotypes toned in tea do; night dims it to a warm amber so the
-   screen carries no blue late in the evening. OKLCH mixing travels from blue
-   through violet and rose to amber, like a sunset. */
+   reader's clock. Day is the blue above. Golden hour turns the print the
+   orange of a low sun, blue's complementary colour; OKLCH mixing travels
+   from blue through violet and rose, like a real sunset. By sunset --night
+   reaches 100%: a palette with no blue at all (every colour ends in 00),
+   amber ink on near-black, still far above the WCAG AA contrast minimum. */
 @supports (color: color-mix(in oklch, red, blue)) {
   html[data-style="2"] {
-    --bg: color-mix(in oklch, color-mix(in oklch, #15356a, #4b3322 var(--dusk, 0%)), #24160d var(--night, 0%));
-    --bg-deep: color-mix(in oklch, color-mix(in oklch, #0c2350, #2f1f14 var(--dusk, 0%)), #150c06 var(--night, 0%));
-    --paper: color-mix(in oklch, color-mix(in oklch, #1b407c, #5a3e2a var(--dusk, 0%)), #2f1d11 var(--night, 0%));
-    --ink: color-mix(in oklch, color-mix(in oklch, #f1f5fb, #f7ecdc var(--dusk, 0%)), #f2d6ae var(--night, 0%));
-    --muted: color-mix(in oklch, color-mix(in oklch, #b1c3df, #d9c0a0 var(--dusk, 0%)), #b9936a var(--night, 0%));
-    --body-ink: color-mix(in oklch, color-mix(in oklch, #dfe7f3, #efe0cb var(--dusk, 0%)), #e6c89e var(--night, 0%));
+    --bg: color-mix(in oklch, color-mix(in oklch, #15356a, #9c3e0e var(--dusk, 0%)), #140800 var(--night, 0%));
+    --bg-deep: color-mix(in oklch, color-mix(in oklch, #0c2350, #6e2606 var(--dusk, 0%)), #0a0400 var(--night, 0%));
+    --paper: color-mix(in oklch, color-mix(in oklch, #1b407c, #a5440f var(--dusk, 0%)), #221000 var(--night, 0%));
+    --ink: color-mix(in oklch, color-mix(in oklch, #f1f5fb, #fff3e0 var(--dusk, 0%)), #ffb000 var(--night, 0%));
+    --muted: color-mix(in oklch, color-mix(in oklch, #b1c3df, #ffd9b3 var(--dusk, 0%)), #c07800 var(--night, 0%));
+    --body-ink: color-mix(in oklch, color-mix(in oklch, #dfe7f3, #fde8cf var(--dusk, 0%)), #f0a000 var(--night, 0%));
     --rule: color-mix(in oklch, var(--ink) 22%, transparent);
     --accent: var(--ink);
     --accent-ink: var(--bg);
   }
+}
+
+/* After sunset, a last filter over the whole screen multiplies every pixel
+   by pure yellow, which removes blue from anything the palette can't reach:
+   emoji, text selection, focus rings, the paper grain. */
+html[data-style="2"][data-sun="night"] body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  pointer-events: none;
+  background: #ffff00;
+  mix-blend-mode: multiply;
 }
 
 [data-style="2"] body {

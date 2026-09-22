@@ -10,7 +10,7 @@ The site ships three complete visual styles. Switch with the pill at the bottom 
 | 2 | Cyanotype | After Anna Atkins, 1843: white plant silhouettes on Prussian blue, with a fern grown from four equations |
 | 3 | Darkfield | A microscope view: glowing specimens in round lenses, drifting cells, a 50 µm scale bar |
 
-**Cyanotype follows the sun.** `js/sun.js` works out how high the sun is from the reader's clock and time zone (no location prompt) and sets two dials, `--dusk` and `--night`, that `css/v2.css` mixes into the colours: Prussian blue by day, tea-toned brown at golden hour, dim amber after dark. The button shows ☀, ◐ or ☾. Preview a phase with `?sun=day`, `?sun=dusk` or `?sun=night`. Without JavaScript, or in browsers without `color-mix()`, the page stays daytime blue.
+**Cyanotype follows the sun.** `js/sun.js` works out how high the sun is from the reader's clock and time zone (no location prompt) and sets two dials, `--dusk` and `--night`, that `css/v2.css` mixes into the colours: Prussian blue by day, sunset orange at golden hour, and from sunset on amber on black with no blue light at all (a yellow multiply filter catches anything the palette misses). The button shows ☀, ◐ or ☾. Preview a phase with `?sun=day`, `?sun=dusk` or `?sun=night`. Without JavaScript, or in browsers without `color-mix()`, the page stays daytime blue.
 
 The first round of styles (Assay, Metabolic, Herbarium) is saved at the git tag `styles-round-1`.
 
