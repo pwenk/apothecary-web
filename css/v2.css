@@ -19,6 +19,25 @@ html[data-style="2"] {
   color-scheme: dark;
 }
 
+/* Following the sun. js/sun.js sets --dusk and --night (0% to 100%) from the
+   reader's clock. Day is the blue above; golden hour turns the print brown,
+   the way cyanotypes toned in tea do; night dims it to a warm amber so the
+   screen carries no blue late in the evening. OKLCH mixing travels from blue
+   through violet and rose to amber, like a sunset. */
+@supports (color: color-mix(in oklch, red, blue)) {
+  html[data-style="2"] {
+    --bg: color-mix(in oklch, color-mix(in oklch, #15356a, #4b3322 var(--dusk, 0%)), #24160d var(--night, 0%));
+    --bg-deep: color-mix(in oklch, color-mix(in oklch, #0c2350, #2f1f14 var(--dusk, 0%)), #150c06 var(--night, 0%));
+    --paper: color-mix(in oklch, color-mix(in oklch, #1b407c, #5a3e2a var(--dusk, 0%)), #2f1d11 var(--night, 0%));
+    --ink: color-mix(in oklch, color-mix(in oklch, #f1f5fb, #f7ecdc var(--dusk, 0%)), #f2d6ae var(--night, 0%));
+    --muted: color-mix(in oklch, color-mix(in oklch, #b1c3df, #d9c0a0 var(--dusk, 0%)), #b9936a var(--night, 0%));
+    --body-ink: color-mix(in oklch, color-mix(in oklch, #dfe7f3, #efe0cb var(--dusk, 0%)), #e6c89e var(--night, 0%));
+    --rule: color-mix(in oklch, var(--ink) 22%, transparent);
+    --accent: var(--ink);
+    --accent-ink: var(--bg);
+  }
+}
+
 [data-style="2"] body {
   background: radial-gradient(120% 90% at 50% 20%, var(--bg) 40%, var(--bg-deep) 100%) fixed, var(--bg);
 }
@@ -38,7 +57,7 @@ html[data-style="2"] {
 [data-style="2"] .brand-mark {
   border-radius: 50%;
   background: radial-gradient(circle at 50% 50%, var(--ink) 0 35%, transparent 60%);
-  box-shadow: 0 0 10px rgb(241 245 251 / 0.5);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--ink) 50%, transparent);
 }
 
 [data-style="2"] .brand-name {
@@ -59,7 +78,7 @@ html[data-style="2"] {
 /* Photogram look: white, slightly soft at the edges. */
 [data-style="2"] .glyph {
   color: var(--ink);
-  filter: blur(0.35px) drop-shadow(0 0 6px rgb(241 245 251 / 0.35));
+  filter: blur(0.35px) drop-shadow(0 0 6px color-mix(in srgb, var(--ink) 35%, transparent));
 }
 
 [data-style="2"] .glyph .g-fill {
@@ -77,7 +96,7 @@ html[data-style="2"] {
 [data-style="2"] .post-specimen {
   position: relative;
   background: radial-gradient(100% 100% at 50% 40%, var(--paper) 55%, var(--bg-deep) 130%);
-  box-shadow: inset 0 0 0 1px var(--rule), inset 0 0 40px rgb(5 20 50 / 0.55);
+  box-shadow: inset 0 0 0 1px var(--rule), inset 0 0 40px color-mix(in srgb, var(--bg-deep) 70%, transparent);
 }
 
 /* ---------- hero ---------- */
@@ -105,7 +124,7 @@ html[data-style="2"] {
   font-size: clamp(3.4rem, 8.4vw, 8rem);
   line-height: 0.88;
   letter-spacing: -0.02em;
-  text-shadow: 0 0 30px rgb(241 245 251 / 0.18);
+  text-shadow: 0 0 30px color-mix(in srgb, var(--ink) 18%, transparent);
 }
 
 [data-style="2"] .hero-lede {
@@ -138,7 +157,7 @@ html[data-style="2"] {
 }
 
 [data-style="2"] .hero-cta:hover {
-  box-shadow: 0 0 28px rgb(241 245 251 / 0.45);
+  box-shadow: 0 0 28px color-mix(in srgb, var(--ink) 45%, transparent);
   transform: translateY(-2px);
 }
 
@@ -267,14 +286,14 @@ html[data-style="2"] {
 /* Hover: the print gets a little more sun. */
 [data-style="2"] .entry:hover .e-art,
 [data-style="2"] .entry:focus-visible .e-art {
-  box-shadow: inset 0 0 0 1px rgb(241 245 251 / 0.5), inset 0 0 40px rgb(5 20 50 / 0.35);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 50%, transparent), inset 0 0 40px color-mix(in srgb, var(--bg-deep) 55%, transparent);
   filter: brightness(1.18);
 }
 
 [data-style="2"] .entry:hover .e-glyph,
 [data-style="2"] .entry:focus-visible .e-glyph {
   transform: scale(1.05) rotate(-2deg);
-  filter: blur(0.2px) drop-shadow(0 0 14px rgb(241 245 251 / 0.6));
+  filter: blur(0.2px) drop-shadow(0 0 14px color-mix(in srgb, var(--ink) 60%, transparent));
 }
 
 [data-style="2"] .entry:focus-visible {
@@ -406,7 +425,7 @@ html[data-style="2"] {
   margin: 56px auto 0;
   font-size: 1.1rem;
   line-height: 1.75;
-  color: #dfe7f3;
+  color: var(--body-ink, #dfe7f3);
 }
 
 [data-style="2"] .post-body h2 {
@@ -441,7 +460,7 @@ html[data-style="2"] {
 
 [data-style="2"] .post-next:hover {
   border-color: var(--ink);
-  box-shadow: 0 0 24px rgb(241 245 251 / 0.2);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--ink) 20%, transparent);
 }
 
 [data-style="2"] .site-foot {
@@ -452,11 +471,11 @@ html[data-style="2"] {
 [data-style="2"] .switcher {
   background: var(--ink);
   color: var(--accent-ink);
-  box-shadow: 0 10px 30px rgb(0 10 40 / 0.5);
+  box-shadow: 0 10px 30px color-mix(in srgb, var(--bg-deep) 70%, transparent);
 }
 
 [data-style="2"] .switch-btn:hover {
-  background: rgb(21 53 106 / 0.1);
+  background: color-mix(in srgb, var(--accent-ink) 10%, transparent);
 }
 
 [data-style="2"] .switch-btn[aria-checked="true"] {

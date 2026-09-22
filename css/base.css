@@ -527,6 +527,11 @@ canvas {
   outline-offset: 2px;
 }
 
+.sun-mark {
+  margin-left: 2px;
+  font-size: 0.85em;
+}
+
 .switch-num {
   font-weight: 600;
 }

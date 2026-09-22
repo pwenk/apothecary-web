@@ -282,7 +282,7 @@
   }
 
   const params = new URLSearchParams(location.search);
-  let style = pick(params.get("v"), readStored(STYLE_KEY), (v) => !!STYLES[v], "1");
+  let style = pick(params.get("v"), readStored(STYLE_KEY), (v) => !!STYLES[v], "2");
   let layoutId = "0"; // settled once every layout file has registered
 
   const currentLayout = () => layouts.get(layoutId) || layouts.get("0");
@@ -292,6 +292,7 @@
     style = next;
     root.dataset.style = next;
     document.querySelector('meta[name="theme-color"]')?.setAttribute("content", STYLES[next].themeColor);
+    window.SUN?.update(); // Cyanotype takes its colours from the sun
     if (persist) {
       writeStored(STYLE_KEY, next);
       setSearchParam("v", next);
@@ -419,10 +420,14 @@
       .map(
         ([v, s]) =>
           `<button type="button" class="switch-btn" role="radio" id="style-${v}" data-v="${v}" aria-checked="false">
-             <span class="switch-num">${v}</span><span class="switch-name">${s.name}</span>
+             <span class="switch-num">${v}</span><span class="switch-name">${s.name}</span>${
+               v === "2" ? `<span class="sun-mark" id="sun-mark" aria-hidden="true"></span>` : ""
+             }
            </button>`
       )
       .join("");
+
+    window.SUN?.update(); // fills in the sun mark on the Cyanotype button
 
     group.addEventListener("click", (e) => {
       const btn = e.target.closest(".switch-btn");
