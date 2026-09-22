@@ -21,7 +21,7 @@
           l = l || localStorage.getItem("apothecary-layout");
         } catch (e) {}
         if (v === "1" || v === "2" || v === "3") document.documentElement.dataset.style = v;
-        if (/^(10|[0-9])$/.test(l || "")) document.documentElement.dataset.layout = l;
+        if (/^(1[0-9]|2[0-3]|[0-9])$/.test(l || "")) document.documentElement.dataset.layout = l;
       })();
     </script>
     <script src="js/sun.js"></script>
@@ -36,6 +36,7 @@
     <link rel="stylesheet" href="css/v2.css" />
     <link rel="stylesheet" href="css/v3.css" />
     <link rel="stylesheet" href="css/layouts.css" />
+    <link rel="stylesheet" href="css/network.css" />
   </head>
   <body>
     <a class="skip" href="#view">Skip to content</a>
@@ -88,6 +89,11 @@
     <script src="js/layouts/08-museum.js"></script>
     <script src="js/layouts/09-register.js"></script>
     <script src="js/layouts/10-lenses.js"></script>
+    <script src="js/network-data.js"></script>
+    <script src="js/network.js"></script>
+    <script src="js/layouts/13-index.js"></script>
+    <script src="js/layouts/19-glossary.js"></script>
+    <script src="js/layouts/23-graph.js"></script>
     <script src="js/fern.js"></script>
     <script src="js/lens.js"></script>
   </body>
