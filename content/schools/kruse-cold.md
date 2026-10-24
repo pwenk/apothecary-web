@@ -43,7 +43,7 @@ Some of that machinery is real. In 2012, when he started, most doctors had only 
 
 ## The fat that burns
 
-Most of your fat is white fat, a pantry. **Brown fat** is a furnace. Its cells are packed with mitochondria that carry a protein called **UCP1**, uncoupling protein 1.
+Most of your fat is white fat, which stores energy. **Brown fat** burns it. Its cells are packed with mitochondria that carry a protein called **UCP1**, uncoupling protein 1.
 
 Normally a mitochondrion pumps protons across its inner membrane and lets them flow back through a turbine that makes ATP. UCP1 opens a side door. The protons rush back without turning the turbine, and the energy leaves as heat. It's a car revving in neutral to warm the cabin.
 
