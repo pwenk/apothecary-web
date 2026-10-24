@@ -81,4 +81,4 @@ Eat the orange, pith and all; it's a cheap, excellent source of vitamin C with i
 
 Before you mix citrus and medicine: if a drug label mentions grapefruit, treat Seville orange, lime and pomelo the same way, and ask your pharmacist whether your pills ride the OATP door too. Orange juice and some drugs, like fexofenadine, are worth spacing apart.
 
-The next food comes with a fierce argument about two versions of a single protein, and one researcher who drank it by the quart. On to [milk](/pantry/milk).
+The next food comes with a fierce argument about two versions of a single protein, and a biologist who put it at the center of his diet. On to [milk](/pantry/milk).
